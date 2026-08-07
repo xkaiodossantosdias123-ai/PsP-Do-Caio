@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PPSSPP Web</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app">
+    <header class="topbar">
+      <div class="tabs">
+        <button class="tab active" data-page="recentes">Recentes</button>
+        <button class="tab" data-page="jogos">Jogos</button>
+        <button class="tab" data-page="homebrew">Homebrew &amp; Demos</button>
+      </div>
+      <div class="brand"><span class="psp-mark">✣</span> PPSSPP <small>WEB</small></div>
+    </header>
+
+    <main>
+      <section id="recentes" class="page active">
+        <div class="path">ms:/PSP/GAME</div>
+        <div class="toolbar">
+          <button title="Início">⌂</button>
+          <button id="addGameBtn" title="Procurar jogo">📁 Procurar...</button>
+          <button title="Importar">⇧</button>
+          <button title="Grade">▦</button>
+          <button title="Lista">☰</button>
+          <button id="reloadBtn" title="Atualizar">↻</button>
+          <button id="settingsBtn" title="Configurações">⚙</button>
+        </div>
+
+        <div id="gameGrid" class="game-grid"></div>
+        <div class="help">↗ &nbsp; Como eu posso obter jogos?</div>
+      </section>
+
+      <section id="jogos" class="page">
+        <h1>Jogos</h1>
+        <div id="allGames" class="game-grid"></div>
+      </section>
+
+      <section id="homebrew" class="page">
+        <h1>Homebrew &amp; Demos</h1>
+        <div class="empty">Nenhum homebrew ou demo adicionado.</div>
+      </section>
+
+      <section id="settings" class="settings-page">
+        <aside class="settings-menu">
+          <button data-setting="graficos">▣ &nbsp; Gráficos</button>
+          <button data-setting="controles">🎮 &nbsp; Controles</button>
+          <button data-setting="audio">🔊 &nbsp; Áudio</button>
+          <button data-setting="rede">⌁ &nbsp; Rede</button>
+          <button data-setting="ferramentas">🛠 &nbsp; Ferramentas</button>
+          <button class="selected" data-setting="sistema">▣ &nbsp; Sistema</button>
+          <button data-setting="procurar">⌕ &nbsp; Procurar</button>
+          <div class="settings-back" id="backBtn">↩ &nbsp; Voltar</div>
+        </aside>
+        <div class="settings-content">
+          <h1 id="settingsTitle">Sistema</h1>
+          <div id="settingsRows"></div>
+        </div>
+      </section>
+
+      <section id="player" class="player">
+        <div class="player-top">
+          <span id="nowPlaying">Jogo</span>
+          <button id="exitPlayer">✕</button>
+        </div>
+        <div class="fake-screen">
+          <div class="loading">PPSSPP WEB<br><small>Área de execução do emulador</small></div>
+        </div>
+        <div class="virtual-controls">
+          <div class="dpad">
+            <button>▲</button><div><button>◀</button><button>●</button><button>▶</button></div><button>▼</button>
+          </div>
+          <div class="shoulders"><button>L</button><button>R</button></div>
+          <div class="face-buttons"><button>△</button><button>○</button><button>□</button><button>✕</button></div>
+        </div>
+      </section>
+    </main>
+
+    <input id="fileInput" type="file" hidden multiple
+      accept=".iso,.cso,.zip,.7z,.html,.htm,.exe,.apk">
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
