@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>PPSSPP Web</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header class="topbar">
+
+    <nav class="tabs">
+        <button class="tab active" data-page="recentes">
+            Recentes
+        </button>
+
+        <button class="tab" data-page="jogos">
+            Jogos
+        </button>
+
+        <button class="tab" data-page="homebrew">
+            Homebrew & Demos
+        </button>
+    </nav>
+
+    <div class="logo">
+        <b>✣ PPSSPP</b>
+        <span>WEB</span>
+    </div>
+
+</header>
+
+
+<main>
+
+<!-- RECENTES -->
+
+<section id="recentes" class="page active">
+
+    <div class="path">
+        ms:/PSP/GAME
+    </div>
+
+    <div class="toolbar">
+
+        <button id="homeButton">⌂</button>
+
+        <button id="selectGame">
+            📁 Procurar
+        </button>
+
+        <button id="refreshButton">
+            ↻
+        </button>
+
+        <button id="settingsButton">
+            ⚙
+        </button>
+
+    </div>
+
+
+    <div id="gameList" class="games">
+
+        <div class="empty">
+            Nenhum jogo carregado.
+            <br>
+            <small>
+                Clique em "Procurar" para selecionar uma ISO/CSO.
+            </small>
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- JOGOS -->
+
+<section id="jogos" class="page">
+
+    <h1>Jogos</h1>
+
+    <div id="allGames" class="games"></div>
+
+</section>
+
+
+<!-- HOMEBREW -->
+
+<section id="homebrew" class="page">
+
+    <h1>Homebrew & Demos</h1>
+
+    <div class="empty">
+        Nenhum Homebrew ou Demo encontrado.
+    </div>
+
+</section>
+
+
+<!-- CONFIGURAÇÕES -->
+
+<section id="settings" class="settings">
+
+    <aside class="settings-menu">
+
+        <button data-setting="graficos">
+            ▣ Gráficos
+        </button>
+
+        <button data-setting="controles">
+            🎮 Controles
+        </button>
+
+        <button data-setting="audio">
+            🔊 Áudio
+        </button>
+
+        <button data-setting="rede">
+            🌐 Rede
+        </button>
+
+        <button data-setting="ferramentas">
+            🛠 Ferramentas
+        </button>
+
+        <button data-setting="sistema"
+                class="selected">
+            ⚙ Sistema
+        </button>
+
+        <button data-setting="procurar">
+            🔎 Procurar
+        </button>
+
+        <button id="backSettings">
+            ↩ Voltar
+        </button>
+
+    </aside>
+
+
+    <section class="settings-content">
+
+        <h1 id="settingsTitle">
+            Sistema
+        </h1>
+
+        <div id="settingsRows"></div>
+
+    </section>
+
+</section>
+
+
+<!-- EMULADOR -->
+
+<section id="emulator" class="emulator">
+
+    <div class="emulator-header">
+
+        <span id="gameTitle">
+            PPSSPP WEB
+        </span>
+
+        <button id="closeGame">
+            ✕
+        </button>
+
+    </div>
+
+
+    <div id="emulatorScreen">
+
+        <div class="emulator-message">
+
+            <strong>PPSSPP WEB</strong>
+
+            <p>
+                Área do emulador
+            </p>
+
+            <small>
+                O build WebAssembly do emulador será carregado aqui.
+            </small>
+
+        </div>
+
+    </div>
+
+
+    <!-- CONTROLES -->
+
+    <div class="controls">
+
+        <div class="dpad">
+
+            <button data-key="ArrowUp">▲</button>
+
+            <div>
+                <button data-key="ArrowLeft">◀</button>
+                <button>●</button>
+                <button data-key="ArrowRight">▶</button>
+            </div>
+
+            <button data-key="ArrowDown">▼</button>
+
+        </div>
+
+
+        <div class="shoulders">
+
+            <button data-key="L">L</button>
+            <button data-key="R">R</button>
+
+        </div>
+
+
+        <div class="face-buttons">
+
+            <button>△</button>
+            <button>○</button>
+            <button>□</button>
+            <button>✕</button>
+
+        </div>
+
+    </div>
+
+</section>
+
+</main>
+
+
+<input
+    type="file"
+    id="gameFile"
+    hidden
+    accept=".iso,.cso,.chd,.pbp,.zip"
+>
+
+
+<script src="script.js"></script>
+
+</body>
+              </html>
