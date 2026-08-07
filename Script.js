@@ -1,96 +1,417 @@
-const games = [
-  {name:"PSCA", icon:"🎮"},
-  {name:"Football", icon:"⚽"}
-];
+const games = [];
 
-const settingData = {
-  sistema: [
-    ["Idioma","Português Brasileiro"],
-    ["Ocultar a barra de navegação","☑"],
-    ["Ajuste do tamanho da interface do usuário (DPI)","-1"],
-    ["Limpar o cenário de fundo da interface do usuário","☑"],
-    ["Cenário de fundo transparente da interface do usuário","☑"],
-    ["Posição da tela de notificação","No centro do topo"],
-    ["Animação do cenário de fundo da interface do usuário","Símbolos flutuantes"],
-    ["Tema","Padrão"],
-    ["Tonalidade da Cor","0.00"]
-  ],
-  graficos: [["Backend","WebGL / WebGPU"],["Modo de renderização","Automático"],["Resolução","1x PSP"],["Frameskip","Desativado"],["VSync","Ativado"]],
-  controles: [["Controles na tela","Ativados"],["Opacidade","70%"],["Mapeamento","Configurar..."],["Vibração","Ativada"]],
-  audio: [["Volume","100%"],["Latência","Automática"],["Áudio","Ativado"]],
-  rede: [["Guia de início rápido pro multiplayer","↗"],["Ativar rede/WLAN","☑"],["Endereço do MAC","Aleatório"],["Multiplayer do Ad Hoc","Disponível no modo compatível"],["Apelido","PPSSPP WEB"]],
-  ferramentas: [["Gerenciar dados","Abrir"],["Salvar estado","Criar"],["Carregar estado","Abrir"],["Reiniciar emulador","Executar"]],
-  procurar: [["Pasta de jogos","ms:/PSP/GAME"],["Adicionar jogo","Procurar..."]]
+const pages = document.querySelectorAll(".page");
+const tabs = document.querySelectorAll(".tab");
+
+const gameFile = document.getElementById("gameFile");
+const selectGame = document.getElementById("selectGame");
+
+const gameList = document.getElementById("gameList");
+const allGames = document.getElementById("allGames");
+
+const settings = document.getElementById("settings");
+
+const settingsTitle =
+    document.getElementById("settingsTitle");
+
+const settingsRows =
+    document.getElementById("settingsRows");
+
+
+/* CONFIGURAÇÕES */
+
+const configuration = {
+
+    sistema: [
+        ["Idioma", "Português Brasileiro"],
+        ["Tela cheia", "Ativado"],
+        ["Interface", "Padrão"],
+        ["Tema", "Padrão"]
+    ],
+
+    graficos: [
+        ["Backend", "WebGL / WebGPU"],
+        ["Resolução", "1x PSP"],
+        ["VSync", "Ativado"],
+        ["Frameskip", "Desativado"],
+        ["Filtro", "Automático"]
+    ],
+
+    controles: [
+        ["Controles na tela", "Ativados"],
+        ["Opacidade", "70%"],
+        ["Mapeamento", "Configurar"],
+        ["Vibração", "Ativada"]
+    ],
+
+    audio: [
+        ["Áudio", "Ativado"],
+        ["Volume", "100%"],
+        ["Latência", "Automática"]
+    ],
+
+    rede: [
+        ["WLAN", "Ativado"],
+        ["Apelido", "PPSSPP WEB"],
+        ["MAC", "Automático"]
+    ],
+
+    ferramentas: [
+        ["Salvar estado", "Disponível"],
+        ["Carregar estado", "Disponível"],
+        ["Reiniciar", "Disponível"]
+    ],
+
+    procurar: [
+        ["Pasta", "ms:/PSP/GAME"],
+        ["Selecionar jogo", "Procurar"]
+    ]
+
 };
 
-const $ = s => document.querySelector(s);
-const gameGrid = $("#gameGrid"), allGames = $("#allGames");
 
-function renderGames(target){
-  target.innerHTML = games.map((g,i)=>`
-    <div class="game">
-      <div class="cover">${g.icon}</div>
-      <div class="game-name">${g.name}</div>
-      <button class="play" onclick="playGame(${i})">▶ Jogar</button>
-    </div>`).join("");
+/* ABRIR PÁGINA */
+
+function openPage(id) {
+
+    pages.forEach(page => {
+
+        page.classList.remove("active");
+
+    });
+
+    const page = document.getElementById(id);
+
+    if (page) {
+
+        page.classList.add("active");
+
+    }
 }
-renderGames(gameGrid); renderGames(allGames);
 
-document.querySelectorAll(".tab").forEach(btn=>{
-  btn.onclick=()=>{
-    document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
-    btn.classList.add("active");
-    document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));
-    $("#"+btn.dataset.page).classList.add("active");
-  };
+
+/* ABAS */
+
+tabs.forEach(tab => {
+
+    tab.addEventListener("click", () => {
+
+        tabs.forEach(t =>
+            t.classList.remove("active")
+        );
+
+        tab.classList.add("active");
+
+        openPage(tab.dataset.page);
+
+    });
+
 });
 
-function openSettings(){
-  document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));
-  $("#settings").classList.add("open");
-  loadSettings("sistema");
-}
-$("#settingsBtn").onclick=openSettings;
-$("#backBtn").onclick=()=>{
-  $("#settings").classList.remove("open");
-  $("#recentes").classList.add("active");
-};
 
-document.querySelectorAll(".settings-menu button").forEach(btn=>{
-  btn.onclick=()=>{
-    document.querySelectorAll(".settings-menu button").forEach(x=>x.classList.remove("selected"));
-    btn.classList.add("selected");
-    loadSettings(btn.dataset.setting);
-  };
+/* PROCURAR JOGO */
+
+selectGame.addEventListener("click", () => {
+
+    gameFile.click();
+
 });
 
-function loadSettings(key){
-  $("#settingsTitle").textContent = key[0].toUpperCase()+key.slice(1);
-  $("#settingsRows").innerHTML=(settingData[key]||[]).map(r=>`
-    <div class="setting-row">
-      <div>${r[0]}</div><div class="setting-value">${r[1]}</div>
-    </div>`).join("");
+
+/* ARQUIVO SELECIONADO */
+
+gameFile.addEventListener("change", event => {
+
+    const file = event.target.files[0];
+
+    if (!file) return;
+
+    const game = {
+
+        name: file.name,
+
+        file: file,
+
+        url: URL.createObjectURL(file)
+
+    };
+
+    games.push(game);
+
+    renderGames();
+
+    openGame(game);
+
+});
+
+
+/* LISTAR JOGOS */
+
+function renderGames() {
+
+    if (games.length === 0) {
+
+        gameList.innerHTML = `
+            <div class="empty">
+                Nenhum jogo carregado.
+                <br>
+                <small>
+                    Clique em "Procurar".
+                </small>
+            </div>
+        `;
+
+        allGames.innerHTML = "";
+
+        return;
+
+    }
+
+
+    const html = games.map((game, index) => {
+
+        return `
+
+        <div class="game">
+
+            <div class="cover">
+                🎮
+            </div>
+
+            <div class="game-name">
+                ${escapeHTML(game.name)}
+            </div>
+
+            <button
+                class="play"
+                onclick="openGameByIndex(${index})">
+
+                ▶ Jogar
+
+            </button>
+
+        </div>
+
+        `;
+
+    }).join("");
+
+
+    gameList.innerHTML = html;
+
+    allGames.innerHTML = html;
+
 }
 
-$("#addGameBtn").onclick=()=>$("#fileInput").click();
-$("#fileInput").onchange=e=>{
-  [...e.target.files].forEach(file=>{
-    games.push({name:file.name, icon:file.name.toLowerCase().endsWith(".exe")?"🪟":"🎮"});
-  });
-  renderGames(gameGrid); renderGames(allGames);
+
+/* SEGURANÇA DO NOME */
+
+function escapeHTML(text) {
+
+    return text
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+
+}
+
+
+/* ABRIR JOGO */
+
+window.openGameByIndex = function(index) {
+
+    openGame(games[index]);
+
 };
 
-$("#reloadBtn").onclick=()=>{
-  renderGames(gameGrid); renderGames(allGames);
-};
 
-window.playGame = function(i){
-  $("#nowPlaying").textContent=games[i].name;
-  $("#player").classList.add("open");
-};
-$("#exitPlayer").onclick=()=>$("#player").classList.remove("open");
+function openGame(game) {
 
-document.addEventListener("keydown",e=>{
-  if(e.key==="Escape") $("#player").classList.remove("open");
-});
-  
+    document.getElementById("gameTitle")
+        .textContent = game.name;
+
+    document.getElementById("emulator")
+        .classList.add("open");
+
+    /*
+     * Aqui entra o carregamento do emulador
+     * WebAssembly real.
+     *
+     * Exemplo de estrutura:
+     *
+     * emulator/
+     *   ppsspp.js
+     *   ppsspp.wasm
+     *
+     * O navegador não executa uma ISO
+     * diretamente sem um emulador.
+     */
+
+    console.log(
+        "Jogo selecionado:",
+        game.name
+    );
+
+    console.log(
+        "Arquivo:",
+        game.url
+    );
+
+}
+
+
+/* FECHAR */
+
+document
+    .getElementById("closeGame")
+    .addEventListener("click", () => {
+
+        document
+            .getElementById("emulator")
+            .classList.remove("open");
+
+    });
+
+
+/* CONFIGURAÇÕES */
+
+document
+    .getElementById("settingsButton")
+    .addEventListener("click", () => {
+
+        pages.forEach(page =>
+            page.classList.remove("active")
+        );
+
+        settings.classList.add("open");
+
+        loadSettings("sistema");
+
+    });
+
+
+/* MENU CONFIGURAÇÕES */
+
+document
+    .querySelectorAll(".settings-menu button[data-setting]")
+    .forEach(button => {
+
+        button.addEventListener("click", () => {
+
+            document
+                .querySelectorAll(".settings-menu button")
+                .forEach(b =>
+                    b.classList.remove("selected")
+                );
+
+            button.classList.add("selected");
+
+            loadSettings(
+                button.dataset.setting
+            );
+
+        });
+
+    });
+
+
+function loadSettings(category) {
+
+    settingsTitle.textContent =
+        category.charAt(0).toUpperCase()
+        + category.slice(1);
+
+    const rows =
+        configuration[category] || [];
+
+    settingsRows.innerHTML =
+        rows.map(row => `
+
+            <div class="setting-row">
+
+                <span>
+                    ${row[0]}
+                </span>
+
+                <span class="setting-value">
+                    ${row[1]}
+                </span>
+
+            </div>
+
+        `).join("");
+
+}
+
+
+/* VOLTAR */
+
+document
+    .getElementById("backSettings")
+    .addEventListener("click", () => {
+
+        settings.classList.remove("open");
+
+        openPage("recentes");
+
+        tabs.forEach(t =>
+            t.classList.remove("active")
+        );
+
+        document
+            .querySelector('[data-page="recentes"]')
+            .classList.add("active");
+
+    });
+
+
+/* ATUALIZAR */
+
+document
+    .getElementById("refreshButton")
+    .addEventListener("click", () => {
+
+        renderGames();
+
+    });
+
+
+/* TELA CHEIA */
+
+document
+    .getElementById("homeButton")
+    .addEventListener("click", () => {
+
+        if (!document.fullscreenElement) {
+
+            document.documentElement
+                .requestFullscreen()
+                .catch(() => {});
+
+        } else {
+
+            document.exitFullscreen();
+
+        }
+
+    });
+
+
+/* BOTÕES VIRTUAIS */
+
+document
+    .querySelectorAll(".controls button[data-key]")
+    .forEach(button => {
+
+        button.addEventListener("pointerdown", () => {
+
+            console.log(
+                "Tecla:",
+                button.dataset.key
+            );
+
+        });
+
+    });
