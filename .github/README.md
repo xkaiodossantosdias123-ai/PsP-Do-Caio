@@ -1,4 +1,4 @@
-# PPSSPP WEB
+# PPSSXX DO CAIO
 
 Interface web inspirada no PPSSPP, feita em HTML/CSS/JavaScript e pronta para GitHub Pages.
 
